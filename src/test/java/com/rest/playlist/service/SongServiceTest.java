@@ -1,6 +1,8 @@
 package com.rest.playlist.service;
 
 import com.rest.playlist.enums.SongCategory;
+import com.rest.playlist.exception.AlreadyExistException;
+import com.rest.playlist.exception.ResourceNotFoundException;
 import com.rest.playlist.model.Song;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -20,8 +22,9 @@ public class SongServiceTest {
 
     private SongServiceImpl playlistService;
 
-    private Song mySong = 
+    private Song mySong =
             new Song("test Song #1", "test description Song #1", SongCategory.CLASSICAL, "3:01", "test artist #1");
+
 
     @Before
     public void setup() {
@@ -29,43 +32,52 @@ public class SongServiceTest {
     }
 
     @Test
-    public void getSongs() throws Exception {
+    public void getSongs() {
         List<Song> songs = playlistService.getAllSongs();
         assertFalse(songs.isEmpty());
-        Assertions.assertThat(songs);
-        Assertions.assertThat(songs).contains(songs.get(0));
+        assertThat(songs).size().isNotZero();
+       assertThat(songs).contains(songs.get(0));
+        Assertions.assertThat(songs.get(0).getId()).isNotNull();
+        Assertions.assertThat(songs.get(0).getTitle()).isNotNull();
+        Assertions.assertThat(songs.get(0).getDescription()).isNotNull();
+        Assertions.assertThat(songs.get(0).getArtistName()).isNotNull();
+        Assertions.assertThat(songs.get(0).getDuration()).isNotNull();
+        Assertions.assertThat(songs.get(0).getCategory()).isNotNull();
+    }
+
+    @Test
+    public void testGetSongsByCategory() {
+
+        List<Song> songs = playlistService.getSongsByCategory("CLASSICAL");
+        assertFalse(songs.isEmpty());
+        Assertions.assertThat(songs.get(0).getId()).isNotNull();
+        Assertions.assertThat(songs.get(0).getTitle()).isNotNull();
+        Assertions.assertThat(songs.get(0).getDescription()).isNotNull();
+        Assertions.assertThat(songs.get(0).getArtistName()).isNotNull();
+        Assertions.assertThat(songs.get(0).getDuration()).isNotNull();
+        Assertions.assertThat(songs.get(0).getCategory()).isNotNull();
+
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void testGetSongsWithNonExistCategory() {
+
+        List<Song> songs = playlistService.getSongsByCategory("Popy");
+        assertTrue(songs.isEmpty());
     }
 
 
     @Test
-    public void testIsCategoryExist() {
-        assertEquals(SongCategory.CLASSICAL, mySong.getCategory());
-        mySong.setCategory(SongCategory.POP);
-        assertEquals(SongCategory.POP, mySong.getCategory());
-        mySong.setCategory(SongCategory.JAZZ);
-        assertEquals(SongCategory.JAZZ, mySong.getCategory());
-    }
+    public void testGetSongsByArtistName(){
 
-    @Test
-    public void testGetSongsByCategory() throws Exception {
-
-        List<Song> songs = playlistService.getAllSongsByCategory("CLASSICAL");
+        List<Song> songs = playlistService.getSongsByArtistName("sam");
         assertFalse(songs.isEmpty());
 
     }
 
 
     @Test
-    public void testGetSongsByArtist() throws Exception {
-
-        List<Song> songs = playlistService.getAllSongsByArtist("sam");
-        assertFalse(songs.isEmpty());
-
-    }
-
-
-    @Test
-    public void testGetSongById() throws Exception {
+    public void testGetSongById() {
 
         List<Song> songs = playlistService.getAllSongs();
         songs.add(mySong);
@@ -83,7 +95,7 @@ public class SongServiceTest {
     }
 
     @Test
-    public void testCreateSong() throws Exception {
+    public void testCreateSong(){
 
         Song savedSong = playlistService.createSong(mySong);
         assertThat(savedSong).isNotNull();
@@ -96,8 +108,25 @@ public class SongServiceTest {
 
     }
 
+    @Test(expected = AlreadyExistException.class)
+    public void testCreateExistingSongs() {
+        Song savedSong = playlistService.createSong(mySong);
+        assertThat(savedSong).isNotNull();
+        assertThat(savedSong.getId()).isNotNull();
+        assertThat(savedSong.getTitle()).isEqualTo(mySong.getTitle());
+        assertThat(savedSong.getDescription()).isEqualTo(mySong.getDescription());
+        assertThat(savedSong.getCategory()).isEqualTo(mySong.getCategory());
+        assertThat(savedSong.getDuration()).isEqualTo(mySong.getDuration());
+        assertThat(savedSong.getArtistName()).isEqualTo(mySong.getArtistName());
+
+        Song existedSong = playlistService.createSong(mySong);
+        assertThat(existedSong).isNull();
+
+    }
+
+
     @Test
-    public void testUpdateSong() throws Exception {
+    public void testUpdateSong() {
 
         Song songToUpdate = playlistService.createSong(mySong);
         mySong.setTitle("test Song #2");
@@ -119,7 +148,7 @@ public class SongServiceTest {
     }
 
     @Test
-    public void testDeleteSongById() throws Exception {
+    public void testDeleteSongById() {
 
         Song songToDelete = playlistService.createSong(mySong);
         List<Song> playlistList = playlistService.getAllSongs();

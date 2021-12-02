@@ -7,8 +7,8 @@ import java.util.List;
 public interface ISongService {
 
     List<Song> getAllSongs();
-    List<Song> getAllSongsByCategory(String category);
-    List<Song> getAllSongsByArtist(String artistName);
+    List<Song> getSongsByCategory(String category);
+    List<Song> getSongsByArtistName(String artistName);
     Song getSongById(int id);
     Song createSong(Song playlist);
     void updateSong(Song playlist);

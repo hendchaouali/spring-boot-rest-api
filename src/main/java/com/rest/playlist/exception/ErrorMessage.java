@@ -11,7 +11,7 @@ public class ErrorMessage {
     private String description;
     private List<FieldError> fieldErrors;
 
-    public ErrorMessage(int statusCode, Date timeStamp, String message, String description) {
+    ErrorMessage(int statusCode, Date timeStamp, String message, String description) {
         this.statusCode = statusCode;
         this.timeStamp = timeStamp;
         this.message = message;
@@ -19,7 +19,7 @@ public class ErrorMessage {
     }
 
 
-    public ErrorMessage(int statusCode, Date timeStamp, String message, String description, List<FieldError> fieldErrors) {
+    ErrorMessage(int statusCode, Date timeStamp, String message, String description, List<FieldError> fieldErrors) {
         this.statusCode = statusCode;
         this.timeStamp = timeStamp;
         this.message = message;

@@ -8,7 +8,7 @@ public class FieldError {
 
     private String message;
 
-    public FieldError(String objectName, String field, String message) {
+    FieldError(String objectName, String field, String message) {
         this.objectName = objectName;
         this.field = field;
         this.message = message;

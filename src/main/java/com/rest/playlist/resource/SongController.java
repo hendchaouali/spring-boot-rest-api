@@ -31,15 +31,21 @@ public class SongController {
 
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Song>> getAllSongsByCategory(@PathVariable String category) {
-        List<Song> songs = ISongService.getAllSongsByCategory(category);
+    public ResponseEntity<List<Song>> getSongsByCategory(@PathVariable String category) {
+        List<Song> songs = ISongService.getSongsByCategory(category);
+        if (songs.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
 
     @GetMapping("/artist/{artistName}")
-    public ResponseEntity<List<Song>> getAllSongsByArtist(@PathVariable String artistName) {
-        List<Song> songs = ISongService.getAllSongsByArtist(artistName);
+    public ResponseEntity<List<Song>> getSongsByArtistName(@PathVariable String artistName) {
+        List<Song> songs = ISongService.getSongsByArtistName(artistName);
+        if (songs.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 

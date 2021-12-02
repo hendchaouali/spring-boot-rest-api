@@ -4,21 +4,22 @@ import com.rest.playlist.enums.SongCategory;
 import com.rest.playlist.model.Song;
 import com.rest.playlist.exception.AlreadyExistException;
 import com.rest.playlist.exception.ResourceNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.lang3.EnumUtils;
 
 @Service
 public class SongServiceImpl implements ISongService {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
 
-    private List<Song> mySongs = Stream.of(
+    private final List<Song> mySongs = Stream.of(
             new Song("The Falls", "Album musical d'Ennio Morricone", SongCategory.CLASSICAL, "7:10", "Morricone"),
             new Song("Oblivion", "Album musical d'Astor Piazzolla", SongCategory.CLASSICAL, "6:05", "Piazzolla"),
             new Song("14 Romances", "Album musical de Sergueï Rachmaninov", SongCategory.CLASSICAL, "7:00", "Rachmaninov"),
@@ -36,8 +37,8 @@ public class SongServiceImpl implements ISongService {
     }
 
     @Override
-    public List<Song> getAllSongsByCategory(String category) {
-        SongCategory songCategory = isCategoryExist(category.toUpperCase());
+    public List<Song> getSongsByCategory(String category) {
+        SongCategory songCategory = EnumUtils.getEnumIgnoreCase(SongCategory.class,category);
         if (songCategory == null) {
             throw new ResourceNotFoundException("Not found Category with value = " + category);
         }
@@ -46,7 +47,7 @@ public class SongServiceImpl implements ISongService {
     }
 
     @Override
-    public List<Song> getAllSongsByArtist(String name) {
+    public List<Song> getSongsByArtistName(String name) {
         return mySongs.stream()
                 .filter(s -> s.getArtistName().toUpperCase().contains(name.toUpperCase()))
                 .collect(Collectors.toList());
@@ -63,7 +64,7 @@ public class SongServiceImpl implements ISongService {
     @Override
     public Song createSong(Song song) {
         Song searchedSong = mySongs.stream()
-                .filter(s -> s.getTitle().equals(song.getTitle()) &&
+                .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
                             s.getCategory() == song.getCategory()
                 )
                 .findAny()
@@ -89,17 +90,5 @@ public class SongServiceImpl implements ISongService {
     public void deleteSongById(int id) {
         Song foundedSong = getSongById(id);
         mySongs.remove(foundedSong);
-    }
-
-    private SongCategory isCategoryExist(String category) {
-        switch (category.toUpperCase()) {
-            case "CLASSICAL":
-                return SongCategory.CLASSICAL;
-            case "JAZZ":
-                return SongCategory.JAZZ;
-            case "POP":
-                return SongCategory.POP;
-        }
-        return null;
     }
 }

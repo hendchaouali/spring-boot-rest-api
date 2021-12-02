@@ -147,23 +147,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "deleteSongs",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/songs",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"songs"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
