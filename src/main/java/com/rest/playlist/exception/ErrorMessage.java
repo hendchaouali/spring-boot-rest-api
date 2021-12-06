@@ -2,7 +2,13 @@ package com.rest.playlist.exception;
 
 import java.util.Date;
 import java.util.List;
-
+/**
+*   TODO: 
+        - missing documentation
+        - use a builder to avoid the complexity of constructors
+        - suggestion: use lombok to replace get, constructors with arguments
+        - define a private default constructor to make this class emutable
+**/
 public class ErrorMessage {
 
     private int statusCode;
