@@ -5,7 +5,14 @@ import com.rest.playlist.enums.SongCategory;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.concurrent.atomic.AtomicInteger;
-
+/**
+TODO: 
+    -preferably use emutable models: 
+                                    -delete the setters methods
+                                    - use private default constructor
+                                    
+    - use a builder to avoid the complexity of constructors
+*/
 public class Song {
 
     private static final AtomicInteger count = new AtomicInteger(0);
