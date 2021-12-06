@@ -15,6 +15,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+/**
+The set of tests must present a test strategy, and in a test strategy, 
+it is necessary to test especially the borderline cases. This test is missing borderline cases
+**/
 
 public class SongServiceTest {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
