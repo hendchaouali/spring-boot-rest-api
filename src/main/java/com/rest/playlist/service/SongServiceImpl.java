@@ -28,6 +28,10 @@ TODO:
     ).collect(Collectors.toList());   ==> we can put this part of code in another class; example SongDataGenerator to respect "Single Responsability" in SOLID
     
 -    
+-    getSongsByArtistName: risk to haveNullPointerException     
+-    getSongById: risk to haveNullPointerException     
+-    createSong: risk to haveNullPointerException  
+-    updateSong : risk to haveNullPointerException  
     
     **/
 
