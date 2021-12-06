@@ -15,6 +15,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.EnumUtils;
 
+/**
+TODO:
+-    private final List<Song> mySongs = Stream.of(
+            new Song("The Falls", "Album musical d'Ennio Morricone", SongCategory.CLASSICAL, "7:10", "Morricone"),
+            new Song("Oblivion", "Album musical d'Astor Piazzolla", SongCategory.CLASSICAL, "6:05", "Piazzolla"),
+            new Song("14 Romances", "Album musical de Sergueï Rachmaninov", SongCategory.CLASSICAL, "7:00", "Rachmaninov"),
+            new Song("For The Lover That I Lost", "For the Lover That I Lost (Live At Abbey Road Studios)",SongCategory.POP,  "3:01", "Sam Smith"),
+            new Song("Burning", "Burning (Live From The Hackney Round Chapel)", SongCategory.POP,"4:05", "Sam Smith"),
+            new Song("I'll Play The Blues For You", "No Surrender", SongCategory.JAZZ, "7:42", "Daniel Castro"),
+            new Song("Blues In My Bottle", "Boogie Woogie and Some Blues", SongCategory.JAZZ, "7:03", "Christian Willisohn")
+    ).collect(Collectors.toList());   ==> we can put this part of code in another class; example SongDataGenerator to respect "Single Responsability" in SOLID
+    
+-    
+    
+    **/
+
 @Service
 public class SongServiceImpl implements ISongService {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
