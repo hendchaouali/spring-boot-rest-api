@@ -1,5 +1,11 @@
 package com.rest.playlist.exception;
-
+/**
+*   TODO: 
+        - missing documentation
+        - use a builder to avoid the complexity of constructors
+        - suggestion: use lombok to replace get, constructors with arguments
+        - define a private default constructor to make this class emutable
+**/
 public class FieldError {
 
     private String objectName;
