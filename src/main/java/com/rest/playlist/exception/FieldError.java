@@ -8,7 +8,6 @@ import lombok.*;
  */
 
 @Getter
-@Builder
 class FieldError {
 
     private String objectName;
@@ -16,4 +15,11 @@ class FieldError {
     private String field;
 
     private String message;
+
+    @Builder
+    private FieldError(String objectName, String field, String message) {
+        this.objectName = objectName;
+        this.field = field;
+        this.message = message;
+    }
 }

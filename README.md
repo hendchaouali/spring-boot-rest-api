@@ -121,7 +121,7 @@ Cette classe regroupe les propriétés suivantes : Id, title, description, categ
 
 Ici, nous allons utiliser **Lombok** : est une bibliothèque Java qui se connecte automatiquement à un éditeur afin de générer automatiquement les méthodes getter ou equals à l'aide des annotations.
 
-* **@Getteret / @Setter** :  pour générer automatiquement le getter/setter par défaut.
+* **@Getter / @Setter** :  pour générer automatiquement le getter/setter par défaut.
 * **@Builder** : nous permet de produire automatiquement le code requis pour que la classe soit instanciable et aussi pour éviter la complexité des constructeurs
 
 ```java 
@@ -505,9 +505,68 @@ Utiliser cette url : **http://localhost:8080/swagger-ui.html**
 
 * **Gestion des exceptions : créer une exception personnalisée**
 
+* **@Builder** : nous permet de produire automatiquement le code requis pour que la classe soit instanciable et aussi pour éviter la complexité des constructeurs
+
+* La classe **ErrorMessage**
+
+```java
+/**
+ * instead of using default error response provided by Spring Boot,
+ * we define a specific error response message
+ * response eg :
+ * {
+ *     "statusCode": 400,
+ *     "timeStamp": "2021-12-11T22:35:50.035+00:00",
+ *artist
+ *     "description": "uri=/api/songs",
+ *     "fieldErrors": [
+ *         {
+ *             "objectName": "song",
+ *             "field": "title",
+ *             "message": "NotBlank: titre ne doit pas être null ou vide"
+ *         }
+ *     ]
+ * }
+ */
+
+
+@Getter
+@Builder
+class ErrorMessage {
+
+    private int statusCode;
+    private Date timeStamp;
+    private String message;
+    private String description;
+    private List<FieldError> fieldErrors;
+}
+```
+
+* La classe **FieldError**
+
+```java
+/**
+ * instead of using default error response provided by Spring Boot,
+ * FieldError class is part of ErrorMessage class to definr error response message
+ */
+
+@Getter
+@Builder
+class FieldError {
+
+    private String objectName;
+
+    private String field;
+
+    private String message;
+}
+
+```
+
 Spring prend en charge la gestion des exceptions par :
 -	Un gestionnaire d'exceptions global (@ExceptionHandler )
 -	Controller Advice (@ControllerAdvice )
+
 L’annotation @ControllerAdvice est la spécialisation de l’annotation @Component afin qu'elle soit détectée automatiquement via l'analyse du chemin de classe. Un Conseil de Contrôleur est une sorte d'intercepteur qui entoure la logique de nos Contrôleurs et nous permet de leur appliquer une logique commune.
 
 Les méthodes (annotées avec @ExceptionHandler) sont partagées globalement entre plusieurs composants @Controller pour capturer les exceptions et les traduire en réponses HTTP.

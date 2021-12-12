@@ -27,7 +27,6 @@ import java.util.List;
 
 
 @Getter
-@Builder
 class ErrorMessage {
 
     private int statusCode;
@@ -35,4 +34,13 @@ class ErrorMessage {
     private String message;
     private String description;
     private List<FieldError> fieldErrors;
+
+    @Builder
+    private ErrorMessage(int statusCode, Date timeStamp, String message, String description, List<FieldError> fieldErrors) {
+        this.statusCode = statusCode;
+        this.timeStamp = timeStamp;
+        this.message = message;
+        this.description = description;
+        this.fieldErrors = fieldErrors;
+    }
 }
