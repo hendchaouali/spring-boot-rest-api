@@ -27,9 +27,9 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(SongController.class)
-public class SongControllerTest {
-    private static final Logger log = LoggerFactory.getLogger(SongControllerTest.class);
+@WebMvcTest(SongResource.class)
+public class SongResourceTest {
+    private static final Logger log = LoggerFactory.getLogger(SongResourceTest.class);
 
     @Autowired
     private MockMvc mockMvc;

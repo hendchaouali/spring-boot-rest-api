@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/songs")
-public class SongController {
+public class SongResource {
 
     final private ISongService ISongService;
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
 
-    public SongController(ISongService ISongService) {
+    public SongResource(ISongService ISongService) {
         this.ISongService = ISongService;
     }
 

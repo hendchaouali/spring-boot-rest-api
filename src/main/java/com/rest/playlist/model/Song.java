@@ -42,5 +42,4 @@ public class Song {
         this.duration = duration;
         this.artistName = artistName;
     }
-
 }
