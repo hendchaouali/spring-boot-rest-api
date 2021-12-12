@@ -11,25 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import org.apache.commons.lang3.EnumUtils;
 
 @Service
 public class SongServiceImpl implements ISongService {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
 
-    private final List<Song> mySongs = Stream.of(
-            new Song("The Falls", "Album musical d'Ennio Morricone", SongCategory.CLASSICAL, "7:10", "Morricone"),
-            new Song("Oblivion", "Album musical d'Astor Piazzolla", SongCategory.CLASSICAL, "6:05", "Piazzolla"),
-            new Song("14 Romances", "Album musical de Sergueï Rachmaninov", SongCategory.CLASSICAL, "7:00", "Rachmaninov"),
-            new Song("For The Lover That I Lost", "For the Lover That I Lost (Live At Abbey Road Studios)",SongCategory.POP,  "3:01", "Sam Smith"),
-            new Song("Burning", "Burning (Live From The Hackney Round Chapel)", SongCategory.POP,"4:05", "Sam Smith"),
-            new Song("I'll Play The Blues For You", "No Surrender", SongCategory.JAZZ, "7:42", "Daniel Castro"),
-            new Song("Blues In My Bottle", "Boogie Woogie and Some Blues", SongCategory.JAZZ, "7:03", "Christian Willisohn")
-    ).collect(Collectors.toList());
-
-
+    private CopyOnWriteArrayList<Song> mySongs = new SongDataGenerator().getData();
 
     @Override
     public List<Song> getAllSongs() {
@@ -38,7 +29,7 @@ public class SongServiceImpl implements ISongService {
 
     @Override
     public List<Song> getSongsByCategory(String category) {
-        SongCategory songCategory = EnumUtils.getEnumIgnoreCase(SongCategory.class,category);
+        SongCategory songCategory = EnumUtils.getEnumIgnoreCase(SongCategory.class, category);
         if (songCategory == null) {
             throw new ResourceNotFoundException("Not found Category with value = " + category);
         }
@@ -65,7 +56,7 @@ public class SongServiceImpl implements ISongService {
     public Song createSong(Song song) {
         Song searchedSong = mySongs.stream()
                 .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
-                            s.getCategory() == song.getCategory()
+                        s.getCategory() == song.getCategory()
                 )
                 .findAny()
                 .orElse(null);
@@ -79,11 +70,11 @@ public class SongServiceImpl implements ISongService {
     @Override
     public void updateSong(Song song) {
         Song foundedSong = getSongById(song.getId());
-            foundedSong.setTitle(song.getTitle());
-            foundedSong.setDescription(song.getDescription());
-            foundedSong.setCategory(song.getCategory());
-            foundedSong.setDuration(song.getDuration());
-            foundedSong.setArtistName(song.getArtistName());
+        foundedSong.setTitle(song.getTitle());
+        foundedSong.setDescription(song.getDescription());
+        foundedSong.setCategory(song.getCategory());
+        foundedSong.setDuration(song.getDuration());
+        foundedSong.setArtistName(song.getArtistName());
     }
 
     @Override

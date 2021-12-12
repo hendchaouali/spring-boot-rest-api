@@ -71,6 +71,6 @@ public class SongController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSongById(@PathVariable int id) {
         ISongService.deleteSongById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

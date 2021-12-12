@@ -1,35 +1,40 @@
 package com.rest.playlist.model;
 
 import com.rest.playlist.enums.SongCategory;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Getter
+@Setter
 public class Song {
 
     private static final AtomicInteger count = new AtomicInteger(0);
 
     private int id;
 
-    @NotNull(message = "titre ne doit pas être null")
+    @NotBlank(message = "titre ne doit pas être null ou vide")
     @Size(min = 3, max = 50, message = "titre doit être compris entre 3 et 50 caractères")
     private String title;
 
-    @NotNull(message = "description ne doit pas être nulle")
+    @NotBlank(message = "description ne doit pas être nulle ou vide")
     @Size(min = 3, max = 50, message = "description doit être compris entre 3 et 50 caractères")
     private String description;
 
     @NotNull(message = "categorie<JAZZ, POP, CLASSICAL> ne doit pas être nulle")
     private SongCategory category;
 
-    @NotNull(message = "duration ne doit pas être nulle")
+    @NotBlank(message = "duration ne doit pas être nulle ou vide")
     private String duration;
 
-    @NotNull(message = "artistname ne doit pas être null")
+    @NotBlank(message = "artistname ne doit pas être null ou vide")
     private String artistName;
 
-    public Song(String title, String description, SongCategory category, String duration, String artistName) {
+    @Builder
+    private Song(String title, String description, SongCategory category, String duration, String artistName) {
         this.id = count.incrementAndGet();
         this.title = title;
         this.description = description;
@@ -38,51 +43,4 @@ public class Song {
         this.artistName = artistName;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public SongCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(SongCategory category) {
-        this.category = category;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-    public String getArtistName() {
-        return artistName;
-    }
-
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
-    }
 }

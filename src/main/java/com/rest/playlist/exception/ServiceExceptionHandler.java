@@ -15,6 +15,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * ServiceExceptionHandler class handles specific exceptions :
+ * ResoureNotFoundException, AlreadyExistException, MethodArgumentNotValidException
+ * and global Exception in only one place.
+ */
+
 @ControllerAdvice
 public class ServiceExceptionHandler {
 
@@ -23,23 +29,24 @@ public class ServiceExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.NOT_FOUND.value(),
-                new Date(),
-                e.getMessage(),
-                request.getDescription(false));
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .timeStamp(new Date())
+                .message(e.getMessage())
+                .description(request.getDescription(false))
+                .build();
 
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AlreadyExistException.class)
     public ResponseEntity<ErrorMessage> handleAlreadyExistException(AlreadyExistException e, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.NOT_ACCEPTABLE.value(),
-                new Date(),
-                e.getMessage(),
-                request.getDescription(false));
-
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.NOT_ACCEPTABLE.value())
+                .timeStamp(new Date())
+                .message(e.getMessage())
+                .description(request.getDescription(false))
+                .build();
         return new ResponseEntity<>(message, HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -48,27 +55,31 @@ public class ServiceExceptionHandler {
 
         BindingResult result = e.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors().stream()
-                .map(f -> new FieldError(f.getObjectName(), f.getField(), f.getCode() + ": " + f.getDefaultMessage()))
+                .map(f -> FieldError.builder()
+                        .objectName(f.getObjectName())
+                        .field(f.getField())
+                        .message(f.getCode() + ": " + f.getDefaultMessage())
+                        .build())
                 .collect(Collectors.toList());
 
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.BAD_REQUEST.value(),
-                new Date(),
-                e.getMessage(),
-                request.getDescription(false),
-                fieldErrors);
-
-
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timeStamp(new Date())
+                .message(e.getMessage())
+                .description(request.getDescription(false))
+                .fieldErrors(fieldErrors)
+                .build();
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> globalException(Exception e, WebRequest request) {
-        ErrorMessage message = new ErrorMessage(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                new Date(),
-                e.getMessage(),
-                request.getDescription(false));
+        ErrorMessage message = ErrorMessage.builder()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .timeStamp(new Date())
+                .message(e.getMessage())
+                .description(request.getDescription(false))
+                .build();
 
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -17,9 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.Mockito.*;
@@ -38,10 +36,22 @@ public class SongControllerTest {
 
     @MockBean
     private ISongService songService;
-    private Song mySong = new Song("test Song #1", "test description Song #1", SongCategory.CLASSICAL, "3:01", "artist1");
-    private List<Song> songs = Stream.of(
-            new Song("test Song #2", "test description Song #2", SongCategory.CLASSICAL, "3:03", "artist2")
-    ).collect(Collectors.toList());
+    private Song mySong = Song.builder()
+            .title("test Song #1")
+            .description("test description Song #1")
+            .category(SongCategory.CLASSICAL)
+            .duration("3:01")
+            .artistName("artist1")
+            .build();
+
+    private CopyOnWriteArrayList<Song> songs = new CopyOnWriteArrayList<>(new Song[]{
+            Song.builder()
+                    .title("test Song #2")
+                    .description("test description Song #2")
+                    .category(SongCategory.CLASSICAL)
+                    .duration("3:03")
+                    .artistName("artist2")
+                    .build()});
 
     @Test
     public void testGetSongs() throws Exception {
@@ -171,13 +181,13 @@ public class SongControllerTest {
     @Test
     public void testCreateSongWithTitleNull() throws Exception {
         mySong.setTitle(null);
-        doThrow(new ResourceNotFoundException("NotNull: titre ne doit pas être null")).when(songService).createSong(mySong);
+        doThrow(new ResourceNotFoundException("NotBlank: titre ne doit pas être null ou vide")).when(songService).createSong(mySong);
         mockMvc.perform(post("/api/songs")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(mySong)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("fieldErrors[0].message").value("NotNull: titre ne doit pas être null"));
+                .andExpect(jsonPath("fieldErrors[0].message").value("NotBlank: titre ne doit pas être null ou vide"));
     }
 
     @Test
@@ -217,20 +227,20 @@ public class SongControllerTest {
     @Test
     public void testUpdateSongWithTitleNull() throws Exception {
         mySong.setTitle(null);
-        doThrow(new ResourceNotFoundException("NotNull: titre ne doit pas être null")).when(songService).updateSong(mySong);
+        doThrow(new ResourceNotFoundException("NotBlank: titre ne doit pas être null ou vide")).when(songService).updateSong(mySong);
         mockMvc.perform(post("/api/songs")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(mySong)))
                 .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("fieldErrors[0].message").value("NotNull: titre ne doit pas être null"));
+                .andExpect(jsonPath("fieldErrors[0].message").value("NotBlank: titre ne doit pas être null ou vide"));
     }
 
     @Test
     public void testDeleteSongById() throws Exception {
         doNothing().when(songService).deleteSongById(mySong.getId());
         mockMvc.perform(delete("/api/songs/" + mySong.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

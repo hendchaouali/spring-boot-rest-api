@@ -4,26 +4,32 @@ import com.rest.playlist.enums.SongCategory;
 import com.rest.playlist.exception.AlreadyExistException;
 import com.rest.playlist.exception.ResourceNotFoundException;
 import com.rest.playlist.model.Song;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
-
+@RunWith(SpringRunner.class)
 public class SongServiceTest {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
 
 
     private SongServiceImpl playlistService;
 
-    private Song mySong =
-            new Song("test Song #1", "test description Song #1", SongCategory.CLASSICAL, "3:01", "test artist #1");
+    private Song mySong = Song.builder()
+            .title("test Song #1")
+            .description("test description Song #1")
+            .category(SongCategory.CLASSICAL)
+            .duration("3:01")
+            .artistName("test artist1")
+            .build();
 
 
     @Before
@@ -36,13 +42,13 @@ public class SongServiceTest {
         List<Song> songs = playlistService.getAllSongs();
         assertFalse(songs.isEmpty());
         assertThat(songs).size().isNotZero();
-       assertThat(songs).contains(songs.get(0));
-        Assertions.assertThat(songs.get(0).getId()).isNotNull();
-        Assertions.assertThat(songs.get(0).getTitle()).isNotNull();
-        Assertions.assertThat(songs.get(0).getDescription()).isNotNull();
-        Assertions.assertThat(songs.get(0).getArtistName()).isNotNull();
-        Assertions.assertThat(songs.get(0).getDuration()).isNotNull();
-        Assertions.assertThat(songs.get(0).getCategory()).isNotNull();
+        assertThat(songs).contains(songs.get(0));
+        assertThat(songs.get(0).getId()).isNotNull();
+        assertThat(songs.get(0).getTitle()).isNotNull();
+        assertThat(songs.get(0).getDescription()).isNotNull();
+        assertThat(songs.get(0).getArtistName()).isNotNull();
+        assertThat(songs.get(0).getDuration()).isNotNull();
+        assertThat(songs.get(0).getCategory()).isNotNull();
     }
 
     @Test
@@ -50,12 +56,12 @@ public class SongServiceTest {
 
         List<Song> songs = playlistService.getSongsByCategory("CLASSICAL");
         assertFalse(songs.isEmpty());
-        Assertions.assertThat(songs.get(0).getId()).isNotNull();
-        Assertions.assertThat(songs.get(0).getTitle()).isNotNull();
-        Assertions.assertThat(songs.get(0).getDescription()).isNotNull();
-        Assertions.assertThat(songs.get(0).getArtistName()).isNotNull();
-        Assertions.assertThat(songs.get(0).getDuration()).isNotNull();
-        Assertions.assertThat(songs.get(0).getCategory()).isNotNull();
+        assertThat(songs.get(0).getId()).isNotNull();
+        assertThat(songs.get(0).getTitle()).isNotNull();
+        assertThat(songs.get(0).getDescription()).isNotNull();
+        assertThat(songs.get(0).getArtistName()).isNotNull();
+        assertThat(songs.get(0).getDuration()).isNotNull();
+        assertThat(songs.get(0).getCategory()).isNotNull();
 
     }
 
@@ -68,7 +74,7 @@ public class SongServiceTest {
 
 
     @Test
-    public void testGetSongsByArtistName(){
+    public void testGetSongsByArtistName() {
 
         List<Song> songs = playlistService.getSongsByArtistName("sam");
         assertFalse(songs.isEmpty());
@@ -78,12 +84,12 @@ public class SongServiceTest {
 
     @Test
     public void testGetSongById() {
-
         List<Song> songs = playlistService.getAllSongs();
+        mySong.setId(1000);
         songs.add(mySong);
 
-
         Song foundedSong = playlistService.getSongById(mySong.getId());
+
         assertThat(foundedSong.getId()).isNotNull();
         assertThat(foundedSong.getCategory().toString()).isEqualTo(mySong.getCategory().toString());
         assertThat(foundedSong.getDescription()).isEqualTo(mySong.getDescription());
@@ -95,7 +101,7 @@ public class SongServiceTest {
     }
 
     @Test
-    public void testCreateSong(){
+    public void testCreateSong() {
 
         Song savedSong = playlistService.createSong(mySong);
         assertThat(savedSong).isNotNull();
