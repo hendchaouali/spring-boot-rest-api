@@ -13,7 +13,7 @@ Nous allons créer une API Spring Boot Rest CRUD pour une application de playlis
 | ------------- | ------------- | ------------- | ------------- |
 | POST  | /api/songs  | Créer une chanson  | 201  |
 | PUT  | /api/songs/{id}  | Modifier une chanson  | 200  |
-| GET  | /api/songs/{id}  | Récupérer une chanson | 200, 204  |
+| GET  | /api/songs/{id}  | Récupérer une chanson | 200  |
 | GET  | /api/songs  | Récupérer toutes les chansons  | 200, 204  |
 | GET  | /api/songs/category/{category} | Récupérer toutes les chansons par catégorie  | 200, 204  |
 | GET  | /api/songs/artist/{artistName} | Récupérer toutes les chansons par nom d'artiste  | 200, 204  |
