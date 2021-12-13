@@ -32,12 +32,13 @@ Un client lance une requête HTTP, et le serveur renvoie une réponse à travers
 * Java 8
 * IDE Intellij IDEA
 * Spring Boot 2.5.7 (avec Spring Web MVC)
+* Lombok 1.18.22
 * Maven 4.0.0
 
 ## I. Initialisation du projet
 Pour amorcer une application Spring Boot , nous pouvons démarrer le projet à partir de zéro avec notre IDE préféré, ou simplement utiliser un autre moyen qui facilite la vie : [SpringInitializr](https://start.spring.io/)
 
-Initialement, nous avons choisi la dépendance Spring web.
+Initialement, nous avons choisi la dépendance Spring web et lombok.
 
 ![Screenshot](src/main/resources/images/springInitializr.png)
 
@@ -1077,6 +1078,20 @@ public class SongServiceTest {
         playlistService.deleteSongById(songToDelete.getId());
 
         assertThat(playlistList.size()).isEqualTo(sizeBeforeDelete - 1);
+    }
+}
+```
+
+La classe **TestUtils** contient une méthode qui sert à convertir un objet Json en une chaîne de caractère.
+```java
+
+public class TestUtils {
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 ```
