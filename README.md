@@ -9,14 +9,22 @@ Nous allons créer une API Spring Boot Rest CRUD pour une application de playlis
 
 * Apis prend également en charge les méthodes de recherche personnalisées ou ce qu'on applelle "query methods " telles que la recherche par catégorie ou par artiste.
 ##### Points de terminaison d’API
-| Méthode HTTP | URI | Description | Codes d'états http valides |
+- Les codes de réponse HTTP: 
+* **200 Success** : La demande a réussi
+* **201 Created** : La demande a été satisfaite et a entraîné la création d'une nouvelle ressource
+* **204 No Content** : La demande a répondu à la demande mais n'a pas besoin de retourner un corps d'entité
+* **400 Bad Request** : La requête n'a pas pu être comprise par le serveur en raison d'une syntaxe mal formée
+* **404 Not Found** : Le serveur n'a rien trouvé correspondant à l'URI de la requête
+* **409 Conflict** : La demande n'a pas pu être traitée en raison d'un conflit avec l'état actuel de la ressource
+
+| Méthode HTTP | URI | Description | Codes d'états http |
 | ------------- | ------------- | ------------- | ------------- |
-| POST  | /api/songs  | Créer une chanson  | 201  |
-| PUT  | /api/songs/{id}  | Modifier une chanson  | 200  |
-| GET  | /api/songs/{id}  | Récupérer une chanson | 200, 204  |
-| GET  | /api/songs  | Récupérer toutes les chansons  | 200, 204  |
-| GET  | /api/songs/category/{category} | Récupérer toutes les chansons par catégorie  | 200, 204  |
-| GET  | /api/songs/artist/{artistName} | Récupérer toutes les chansons par nom d'artiste  | 200, 204  |
+| POST  | /api/songs  | Créer une chanson  | 201, 409  |
+| PUT  | /api/songs/{id}  | Modifier une chanson  | 200, 409  |
+| GET  | /api/songs/{id}  | Récupérer une chanson | 200, 404  |
+| GET  | /api/songs  | Récupérer toutes les chansons  | 200  |
+| GET  | /api/songs/category/{category} | Récupérer toutes les chansons par catégorie  | 200, 404  |
+| GET  | /api/songs/artist/{artistName} | Récupérer toutes les chansons par nom d'artiste  | 200  |
 | DELETE  | /api/songs/{id}  | Supprimer une chanson | 204  |
 
 ##### Spring Boot
@@ -175,7 +183,7 @@ public enum SongCategory {
 }
 ```
 
-* **Package « Service »**
+* **Package « service »**
 
 Ce package contient :
 
@@ -269,6 +277,8 @@ La classe « **SongService** » qui contient l’implémentation de méthodes de
 
 Cette classe doit être annotée avec **@Service**
 
+- La méthode **verifyIfSongExist** throw une exception si le titre et la catégorie de la chanson à créer/modifier sont déjà utilisés.
+
 ```java
 @Service
 public class SongServiceImpl implements ISongService {
@@ -308,21 +318,15 @@ public class SongServiceImpl implements ISongService {
 
     @Override
     public Song createSong(Song song) {
-        Song searchedSong = mySongs.stream()
-                .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
-                        s.getCategory() == song.getCategory()
-                )
-                .findAny()
-                .orElse(null);
-        if (searchedSong != null) {
-            throw new AlreadyExistException("Song Already Exists.");
-        }
+        verifyIfSongExist(song);
         mySongs.add(song);
         return song;
     }
 
     @Override
     public void updateSong(Song song) {
+        verifyIfSongExist(song);
+
         Song foundedSong = getSongById(song.getId());
         foundedSong.setTitle(song.getTitle());
         foundedSong.setDescription(song.getDescription());
@@ -336,10 +340,25 @@ public class SongServiceImpl implements ISongService {
         Song foundedSong = getSongById(id);
         mySongs.remove(foundedSong);
     }
+
+    private void verifyIfSongExist(Song song){
+        Song searchedSong = mySongs.stream()
+                .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
+                        s.getCategory() == song.getCategory()
+                )
+                .findAny()
+                .orElse(null);
+        if (searchedSong != null) {
+            throw new AlreadyExistException("Song Already Exists.");
+        }
+    }
 }
 ```
 
-* **Package « Resource »**
+* **Package « resource »**
+
+Il exitse sous le package **web**.
+
 Nous avons créé la classe « **SongResource** » qui contient les différentes requêtes HTTP en injectant par contracteur la classe service « **ISongService** ».
 Ce contrôleur doit être annoté avec **@RestController**.
     -	L’annotation @RestController combine les deux annotations : **@Controller** et **@ResponseBody**
@@ -369,9 +388,6 @@ public class SongResource {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<Song>> getSongsByCategory(@PathVariable String category) {
         List<Song> songs = ISongService.getSongsByCategory(category);
-        if (songs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
@@ -379,9 +395,6 @@ public class SongResource {
     @GetMapping("/artist/{artistName}")
     public ResponseEntity<List<Song>> getSongsByArtistName(@PathVariable String artistName) {
         List<Song> songs = ISongService.getSongsByArtistName(artistName);
-        if (songs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
@@ -506,6 +519,10 @@ Utiliser cette url : **http://localhost:8080/swagger-ui.html**
 
 * **Gestion des exceptions : créer une exception personnalisée**
 
+**Package « exception »**
+
+Il exitse sous le package **web**.
+
 * **@Builder** : nous permet de produire automatiquement le code requis pour que la classe soit instanciable et aussi pour éviter la complexité des constructeurs
 
 * La classe **ErrorMessage**
@@ -599,8 +616,8 @@ public class ResourceNotFoundException extends RuntimeException {
 /**
  * AlreadyExistException class extends RuntimeException.
  * It's about a custom exception :
- * throwing an exception for resource already exist in Spring Boot Service
- * ResourceNotFoundException is thrown with Http 406
+ * throwing an exception for resource already exist (conflict) in Spring Boot Service
+ * AlreadyExistException is thrown with Http 409
  */
 
 public class AlreadyExistException extends RuntimeException {
@@ -757,10 +774,11 @@ public class SongResourceTest {
     }
 
     @Test
-    public void testGetNoContentSongsByCategory() throws Exception {
+    public void testGetEmptyListSongsByCategory() throws Exception {
         mockMvc.perform(get("/api/songs/category/POP")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
@@ -778,11 +796,11 @@ public class SongResourceTest {
     }
 
     @Test
-    public void testGetNoContentSongsArtistName() throws Exception {
+    public void testGetEmptyListSongsArtistName() throws Exception {
         mockMvc.perform(get("/api/songs/artist/sam")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isOk())
+                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
