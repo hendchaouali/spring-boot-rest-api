@@ -10,6 +10,7 @@ Nous allons créer une API Spring Boot Rest CRUD pour une application de playlis
 * Apis prend également en charge les méthodes de recherche personnalisées ou ce qu'on applelle "query methods " telles que la recherche par catégorie ou par artiste.
 ##### Points de terminaison d’API
 - Les codes de réponse HTTP: 
+
 * **200 Success** : La demande a réussi
 * **201 Created** : La demande a été satisfaite et a entraîné la création d'une nouvelle ressource
 * **204 No Content** : La demande a répondu à la demande mais n'a pas besoin de retourner un corps d'entité
