@@ -50,7 +50,7 @@
 			"response": []
 		},
 		{
-			"name": "updatePlaylist",
+			"name": "updateSong",
 			"request": {
 				"method": "PUT",
 				"header": [],
