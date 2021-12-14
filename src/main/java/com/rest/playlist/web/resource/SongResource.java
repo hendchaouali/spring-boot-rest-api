@@ -1,4 +1,4 @@
-package com.rest.playlist.resource;
+package com.rest.playlist.web.resource;
 
 import com.rest.playlist.model.Song;
 import com.rest.playlist.service.ISongService;
@@ -33,9 +33,6 @@ public class SongResource {
     @GetMapping("/category/{category}")
     public ResponseEntity<List<Song>> getSongsByCategory(@PathVariable String category) {
         List<Song> songs = ISongService.getSongsByCategory(category);
-        if (songs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
@@ -43,9 +40,6 @@ public class SongResource {
     @GetMapping("/artist/{artistName}")
     public ResponseEntity<List<Song>> getSongsByArtistName(@PathVariable String artistName) {
         List<Song> songs = ISongService.getSongsByArtistName(artistName);
-        if (songs.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 

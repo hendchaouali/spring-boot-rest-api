@@ -2,10 +2,11 @@ package com.rest.playlist.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.playlist.enums.SongCategory;
-import com.rest.playlist.exception.ResourceNotFoundException;
+import com.rest.playlist.web.exception.ResourceNotFoundException;
 import com.rest.playlist.model.Song;
 import com.rest.playlist.service.ISongService;
 
+import com.rest.playlist.web.resource.SongResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -92,10 +93,11 @@ public class SongResourceTest {
     }
 
     @Test
-    public void testGetNoContentSongsByCategory() throws Exception {
+    public void testGetEmptyListSongsByCategory() throws Exception {
         mockMvc.perform(get("/api/songs/category/POP")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
@@ -113,11 +115,11 @@ public class SongResourceTest {
     }
 
     @Test
-    public void testGetNoContentSongsArtistName() throws Exception {
+    public void testGetEmptyListSongsArtistName() throws Exception {
         mockMvc.perform(get("/api/songs/artist/sam")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test

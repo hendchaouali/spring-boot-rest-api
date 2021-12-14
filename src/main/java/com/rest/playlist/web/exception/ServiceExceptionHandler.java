@@ -1,4 +1,4 @@
-package com.rest.playlist.exception;
+package com.rest.playlist.web.exception;
 
 import com.rest.playlist.service.SongServiceImpl;
 import org.slf4j.Logger;
@@ -42,12 +42,12 @@ public class ServiceExceptionHandler {
     @ExceptionHandler(AlreadyExistException.class)
     public ResponseEntity<ErrorMessage> handleAlreadyExistException(AlreadyExistException e, WebRequest request) {
         ErrorMessage message = ErrorMessage.builder()
-                .statusCode(HttpStatus.NOT_ACCEPTABLE.value())
+                .statusCode(HttpStatus.CONFLICT.value())
                 .timeStamp(new Date())
                 .message(e.getMessage())
                 .description(request.getDescription(false))
                 .build();
-        return new ResponseEntity<>(message, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(message, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,8 +1,8 @@
 package com.rest.playlist.service;
 
 import com.rest.playlist.enums.SongCategory;
-import com.rest.playlist.exception.AlreadyExistException;
-import com.rest.playlist.exception.ResourceNotFoundException;
+import com.rest.playlist.web.exception.AlreadyExistException;
+import com.rest.playlist.web.exception.ResourceNotFoundException;
 import com.rest.playlist.model.Song;
 import org.junit.Before;
 import org.junit.Test;

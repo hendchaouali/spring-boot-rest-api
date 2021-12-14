@@ -2,8 +2,8 @@ package com.rest.playlist.service;
 
 import com.rest.playlist.enums.SongCategory;
 import com.rest.playlist.model.Song;
-import com.rest.playlist.exception.AlreadyExistException;
-import com.rest.playlist.exception.ResourceNotFoundException;
+import com.rest.playlist.web.exception.AlreadyExistException;
+import com.rest.playlist.web.exception.ResourceNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -54,21 +54,15 @@ public class SongServiceImpl implements ISongService {
 
     @Override
     public Song createSong(Song song) {
-        Song searchedSong = mySongs.stream()
-                .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
-                        s.getCategory() == song.getCategory()
-                )
-                .findAny()
-                .orElse(null);
-        if (searchedSong != null) {
-            throw new AlreadyExistException("Song Already Exists.");
-        }
+        verifyIfSongExist(song);
         mySongs.add(song);
         return song;
     }
 
     @Override
     public void updateSong(Song song) {
+        verifyIfSongExist(song);
+
         Song foundedSong = getSongById(song.getId());
         foundedSong.setTitle(song.getTitle());
         foundedSong.setDescription(song.getDescription());
@@ -81,5 +75,17 @@ public class SongServiceImpl implements ISongService {
     public void deleteSongById(int id) {
         Song foundedSong = getSongById(id);
         mySongs.remove(foundedSong);
+    }
+
+    private void verifyIfSongExist(Song song){
+        Song searchedSong = mySongs.stream()
+                .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
+                        s.getCategory() == song.getCategory()
+                )
+                .findAny()
+                .orElse(null);
+        if (searchedSong != null) {
+            throw new AlreadyExistException("Song Already Exists.");
+        }
     }
 }
