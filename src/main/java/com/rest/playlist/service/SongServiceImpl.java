@@ -4,17 +4,15 @@ import com.rest.playlist.enums.SongCategory;
 import com.rest.playlist.model.Song;
 import com.rest.playlist.web.exception.AlreadyExistException;
 import com.rest.playlist.web.exception.ResourceNotFoundException;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.EnumUtils;
 
 @Service
 public class SongServiceImpl implements ISongService {
@@ -77,10 +75,10 @@ public class SongServiceImpl implements ISongService {
         mySongs.remove(foundedSong);
     }
 
-    private void verifyIfSongExist(Song song){
+    private void verifyIfSongExist(Song song) {
         Song searchedSong = mySongs.stream()
                 .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
-                        s.getCategory() == song.getCategory()
+                        s.getCategory() == song.getCategory() && (s.getId() != song.getId())
                 )
                 .findAny()
                 .orElse(null);

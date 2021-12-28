@@ -62,46 +62,46 @@ L'image ci-dessous montre la structure finale du projet
 Contient des dépendances pour Spring Boot. Dans notre cas, nous sommes besoin de ces dépendances.
 
 ```xml
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.9.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
-        </dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
-		</dependency>
-	</dependencies>
+	 <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>2.9.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>2.9.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.22</version>
+            </dependency>
+     </dependencies>
 ```
 
 * **Main Class**
@@ -342,10 +342,10 @@ public class SongServiceImpl implements ISongService {
         mySongs.remove(foundedSong);
     }
 
-    private void verifyIfSongExist(Song song){
+    private void verifyIfSongExist(Song song) {
         Song searchedSong = mySongs.stream()
                 .filter(s -> StringUtils.equals(s.getTitle(), song.getTitle()) &&
-                        s.getCategory() == song.getCategory()
+                        s.getCategory() == song.getCategory() && (s.getId() != song.getId())
                 )
                 .findAny()
                 .orElse(null);
@@ -949,7 +949,6 @@ public class SongResourceTest {
 * **Service** 
 
 ```java
-@RunWith(SpringRunner.class)
 public class SongServiceTest {
     private static final Logger log = LoggerFactory.getLogger(SongServiceImpl.class);
 
@@ -1047,7 +1046,6 @@ public class SongServiceTest {
 
     }
 
-    @Test(expected = AlreadyExistException.class)
     public void testCreateExistingSongs() {
         Song savedSong = playlistService.createSong(mySong);
         assertThat(savedSong).isNotNull();
@@ -1058,8 +1056,9 @@ public class SongServiceTest {
         assertThat(savedSong.getDuration()).isEqualTo(mySong.getDuration());
         assertThat(savedSong.getArtistName()).isEqualTo(mySong.getArtistName());
 
-        Song existedSong = playlistService.createSong(mySong);
-        assertThat(existedSong).isNull();
+        AlreadyExistException ex = assertThrows(AlreadyExistException.class, () -> playlistService.createSong(mySong));
+        assertThat(ex.getMessage()).isEqualTo("Song Already Exists.");
+
 
     }
 
