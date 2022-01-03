@@ -361,11 +361,12 @@ public class SongServiceImpl implements ISongService {
 Il existe sous le package **web**.
 
 Nous avons créé la classe « **SongResource** » qui contient les différentes requêtes HTTP en injectant par contracteur la classe service « **ISongService** ».
+
 Ce contrôleur doit être annoté avec **@RestController**.
-    -	L’annotation @RestController combine les deux annotations : **@Controller** et **@ResponseBody**
-    -	L’annotation @RestController est utilisée pour définir un contrôleur et pour indiquer que la valeur de retour des méthodes doit être liée au corps de la réponse Web.
-    -	 **@RequestMapping("/api/songs")** déclare que toutes les URL d'Apis dans le contrôleur commenceront par /api/songs.
-    -	 Chaque méthode doit être annotée avec l'une de ces annotations: **@GetMapping, @PostMapping, @DeleteMapping ou @PutMapping**.
+- L’annotation @RestController combine les deux annotations : **@Controller** et **@ResponseBody**
+- L’annotation @RestController est utilisée pour définir un contrôleur et pour indiquer que la valeur de retour des méthodes doit être liée au corps de la réponse Web.
+- **@RequestMapping("/api/songs")** déclare que toutes les URL d'Apis dans le contrôleur commenceront par /api/songs.
+- Chaque méthode doit être annotée avec l'une de ces annotations: **@GetMapping, @PostMapping, @DeleteMapping ou @PutMapping**.
     
 ```java
 @RestController
@@ -428,7 +429,7 @@ public class SongResource {
 
 * **Exécuter et tester l’application**
 
-Pour tester les requêtes de l’application, vous devez importer le fichier « **Playlists.postman_collection.json** » qui existe sous le dossier resources/postman.
+Pour tester les requêtes de l’application, vous devez importer le fichier « **Playlists.postman_collection.json** » qui existe sous le dossier resources/postman dans le **Postman**.
 
 ![Screenshot](src/main/resources/images/resources-postman.png)
 
