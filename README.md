@@ -7,7 +7,7 @@ Nous allons créer une API Spring Boot Rest CRUD pour une application de playlis
 
 * Apis aide à créer, récupérer, mettre à jour, supprimer des Song.
 
-* Apis prend également en charge les méthodes de recherche personnalisées ou ce qu'on applelle "query methods " telles que la recherche par catégorie ou par artiste.
+* Apis prend également en charge les méthodes de recherche personnalisées ou ce qu'on appelle "query methods " telles que la recherche par catégorie ou par artiste.
 ##### Points de terminaison d’API
 - Les codes de réponse HTTP: 
 
@@ -358,7 +358,7 @@ public class SongServiceImpl implements ISongService {
 
 * **Package « resource »**
 
-Il exitse sous le package **web**.
+Il existe sous le package **web**.
 
 Nous avons créé la classe « **SongResource** » qui contient les différentes requêtes HTTP en injectant par contracteur la classe service « **ISongService** ».
 Ce contrôleur doit être annoté avec **@RestController**.
@@ -522,7 +522,7 @@ Utiliser cette url : **http://localhost:8080/swagger-ui.html**
 
 **Package « exception »**
 
-Il exitse sous le package **web**.
+Il existe sous le package **web**.
 
 * **@Builder** : nous permet de produire automatiquement le code requis pour que la classe soit instanciable et aussi pour éviter la complexité des constructeurs
 
